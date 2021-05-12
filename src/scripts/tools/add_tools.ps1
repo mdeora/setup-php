@@ -11,10 +11,10 @@ Function Add-ToolsHelper() {
   } elseif($tool -eq "cs2pr") {
     (Get-Content $bin_dir/cs2pr).replace('exit(9)', 'exit(0)') | Set-Content $bin_dir/cs2pr
   } elseif($tool -eq "phan") {
-    Add-Extension fileinfo >$null 2>&1
-    Add-Extension ast >$null 2>&1
+    Add-Extension fileinfo 
+    Add-Extension ast 
   } elseif($tool -eq "phive") {
-    Add-Extension xml >$null 2>&1
+    Add-Extension xml 
   } elseif($tool -eq "symfony") {
     Add-ToProfile $current_profile "symfony" "New-Alias symfony $bin_dir\$tool.exe"
     Add-ToProfile $current_profile "symfony-cli" "New-Alias symfony-cli $bin_dir\$tool.exe"

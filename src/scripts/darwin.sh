@@ -2,7 +2,7 @@
 self_hosted_helper() {
   if ! command -v brew >/dev/null; then
     step_log "Setup Brew"
-    get -q -e "/tmp/install.sh" "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" && /tmp/install.sh >/dev/null 2>&1
+    get -q -e "/tmp/install.sh" "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" && /tmp/install.sh 
     add_log "${tick:?}" "Brew" "Installed Homebrew"
   fi
 }
@@ -10,7 +10,7 @@ self_hosted_helper() {
 # Function to delete extension
 delete_extension() {
   extension=$1
-  sudo rm -rf "${scan_dir:?}"/*"$extension"* "${ext_dir:?}"/"$extension".so >/dev/null 2>&1
+  sudo rm -rf "${scan_dir:?}"/*"$extension"* "${ext_dir:?}"/"$extension".so 
 }
 
 # Function to disable extension
@@ -49,11 +49,11 @@ add_brew_tap() {
   tap=$1
   if ! [ -d "$tap_dir/$tap" ]; then
     if [ "${runner:?}" = "self-hosted" ]; then
-      brew tap --shallow "$tap" >/dev/null 2>&1
+      brew tap --shallow "$tap" 
     else
-      fetch_brew_tap "$tap" >/dev/null 2>&1
+      fetch_brew_tap "$tap" 
       if ! [ -d "$tap_dir/$tap" ]; then
-        brew tap --shallow "$tap" >/dev/null 2>&1
+        brew tap --shallow "$tap" 
       fi
     fi
   fi
@@ -71,7 +71,7 @@ add_brew_extension() {
     add_brew_tap shivammathur/homebrew-php
     add_brew_tap shivammathur/homebrew-extensions
     sudo mv "$tap_dir"/shivammathur/homebrew-extensions/.github/deps/"$formula"/* "$tap_dir/homebrew/homebrew-core/Formula/" 2>/dev/null || true
-    brew install -f "$formula@$version" >/dev/null 2>&1
+    brew install -f "$formula@$version" 
     sudo cp "$brew_prefix/opt/$formula@$version/$extension.so" "$ext_dir"
     add_extension_log "$extension" "Installed and enabled"
   fi
@@ -85,8 +85,8 @@ add_extension() {
   if check_extension "$extension"; then
     add_log "${tick:?}" "$extension" "Enabled"
   else
-    [[ "$version" =~ 5.[4-5] ]] && [ "$extension" = "imagick" ] && brew install -f pkg-config imagemagick >/dev/null 2>&1
-    pecl_install "$extension" >/dev/null 2>&1 &&
+    [[ "$version" =~ 5.[4-5] ]] && [ "$extension" = "imagick" ] && brew install -f pkg-config imagemagick 
+    pecl_install "$extension"  &&
       if [[ "$version" =~ ${old_versions:?} ]]; then echo "$prefix=$ext_dir/$extension.so" >>"$ini_file"; fi
     add_extension_log "$extension" "Installed and enabled"
   fi
@@ -100,7 +100,7 @@ add_devtools() {
 
 # Function to handle request to add PECL.
 add_pecl() {
-  configure_pecl >/dev/null 2>&1
+  configure_pecl 
   pecl_version=$(get_tool_version "pecl" "version")
   add_log "${tick:?}" "PECL" "Found PECL $pecl_version"
 }
@@ -164,13 +164,13 @@ setup_php() {
   step_log "Setup PHP"
   existing_version=$(get_brewed_php)
   if [[ "$version" =~ ${old_versions:?} ]]; then
-    run_script "php5-darwin" "${version/./}" >/dev/null 2>&1
+    run_script "php5-darwin" "${version/./}" 
     status="Installed"
   elif [ "$existing_version" != "$version" ]; then
-    add_php "install" "$existing_version" >/dev/null 2>&1
+    add_php "install" "$existing_version" 
     status="Installed"
   elif [ "$existing_version" = "$version" ] && [ "${update:?}" = "true" ]; then
-    add_php "upgrade" "$existing_version" >/dev/null 2>&1
+    add_php "upgrade" "$existing_version" 
     status="Updated to"
   else
     status="Found"

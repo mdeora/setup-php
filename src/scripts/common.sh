@@ -90,7 +90,7 @@ self_hosted_setup() {
       add_log "$cross" "PHP" "PHP $version is not supported on self-hosted runner"
       exit 1
     else
-      self_hosted_helper >/dev/null 2>&1
+      self_hosted_helper 
     fi
   fi
 }
@@ -128,7 +128,7 @@ enable_cache_extension() {
 # Function to enable existing extensions.
 enable_extension() {
   if [ -e /tmp/setup_php_dismod ] && grep -q "$1" /tmp/setup_php_dismod; then
-    sudo phpenmod -v "$version" "$1" >/dev/null 2>&1
+    sudo phpenmod -v "$version" "$1" 
   fi
   if [ -d /tmp/extcache/"$1" ]; then
     enable_cache_extension "$1" "$2"
@@ -153,7 +153,7 @@ configure_pecl() {
       sudo "$script" config-set php_ini "${pecl_file:-${ini_file[@]}}"
       sudo "$script" channel-update "$script".php.net
     done
-    echo '' | sudo tee /tmp/pecl_config >/dev/null 2>&1
+    echo '' | sudo tee /tmp/pecl_config 
   fi
 }
 
@@ -173,8 +173,8 @@ get_pecl_version() {
 # Function to install PECL extensions and accept default options
 pecl_install() {
   local extension=$1
-  add_pecl >/dev/null 2>&1
-  yes '' 2>/dev/null | sudo pecl install -f "$extension" >/dev/null 2>&1
+  add_pecl 
+  yes '' 2>/dev/null | sudo pecl install -f "$extension" 
 }
 
 # Function to install a specific version of PECL extension.
@@ -190,8 +190,8 @@ add_pecl_extension() {
   if [ "$ext_version" = "$pecl_version" ]; then
     add_log "${tick:?}" "$extension" "Enabled"
   else
-    disable_extension "$extension" >/dev/null 2>&1
-    delete_extension "$extension" >/dev/null 2>&1
+    disable_extension "$extension" 
+    delete_extension "$extension" 
     pecl_install "$extension-$pecl_version"
     add_extension_log "$extension-$pecl_version" "Installed and enabled"
   fi
@@ -287,8 +287,8 @@ add_composertool() {
     fi
   fi
   (
-    sudo rm -f "$composer_lock" >/dev/null 2>&1 || true
-    composer global require "$prefix$release" 2>&1 | tee /tmp/composer.log >/dev/null 2>&1
+    sudo rm -f "$composer_lock"  || true
+    composer global require "$prefix$release" 2>&1 | tee /tmp/composer.log 
     log=$(grep "$prefix$tool" /tmp/composer.log) &&
       tool_version=$(get_tool_version 'echo' "$log") &&
       add_log "$tick" "$tool" "Added $tool $tool_version"
